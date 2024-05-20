@@ -1,8 +1,8 @@
 plugins {
-    kotlin("jvm") version "1.9.23"
+    kotlin("jvm")
 }
 
-group = "com.codewise.glass"
+group = "dev.sekara.block"
 version = "1.0-SNAPSHOT"
 
 repositories {

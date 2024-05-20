@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm")
 }
 
-group = "com.codewise.glass"
+group = "dev.sekara.block"
 version = "1.0-SNAPSHOT"
 
 repositories {
