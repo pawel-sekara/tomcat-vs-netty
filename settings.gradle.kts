@@ -12,4 +12,8 @@ refreshVersions {
         candidate.stabilityLevel != StabilityLevel.Stable
     }
 }
-
+include("domain")
+include("db")
+include("ktor")
+include("webflux")
+include("mvc")
