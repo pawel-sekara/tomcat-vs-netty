@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm")
 }
 
-group = "dev.sekara.block"
+group = "dev.sekara.block.domain"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
+    implementation(project(":db"))
 }
 
 tasks.test {

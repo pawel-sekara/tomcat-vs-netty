@@ -6,7 +6,7 @@ plugins {
     id("org.jooq.jooq-codegen-gradle")
 }
 
-group = "dev.sekara.block"
+group = "dev.sekara.block.db"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -25,7 +25,9 @@ dependencies {
     implementation(libs.postgresql)
     implementation(libs.logback.classic)
     implementation(libs.jooq)
-    runtimeOnly(libs.r2dbc.postgresql)
+    implementation(libs.jooq.kotlin)
+    implementation(libs.jooq.kotlin.coroutines)
+    implementation(libs.r2dbc.postgresql)
     jooqCodegen(libs.postgresql)
     implementation(libs.flyway.core)
     implementation(libs.flyway.database.postgresql)
@@ -38,6 +40,10 @@ flyway {
     driver = "org.postgresql.Driver"
     loggers = arrayOf("slf4j")
 }
+
+val projectDir = project.projectDir.toString().trimEnd { it == '/' }
+val jooqGenerationTargetDir = "$projectDir/build/generated-sources/jooq"
+sourceSets["main"].java.srcDir(jooqGenerationTargetDir)
 
 jooq {
     configuration {
