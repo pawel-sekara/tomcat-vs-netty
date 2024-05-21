@@ -14,7 +14,10 @@ repositories {
 dependencies {
     implementation(project(":db"))
     implementation(project(":domain"))
-    implementation("org.springframework.boot:spring-boot-starter-web:_")
+
+    api(platform(Spring.boms.dependencies))
+
+    implementation(Spring.boot.web)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
     implementation(libs.jackson.datatype.jsr310)

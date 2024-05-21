@@ -17,8 +17,6 @@ org-jetbrains-kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring"
 [versions]
 
 kotlin = "1.9.23"
-##  ⬆ = "1.9.24"
-##  ⬆ = "2.0.0"
 
 ktor = "2.3.11"
 
