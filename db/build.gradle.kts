@@ -31,7 +31,7 @@ dependencies {
     jooqCodegen(libs.postgresql)
     implementation(libs.flyway.core)
     implementation(libs.flyway.database.postgresql)
-    implementation("org.apache.tomcat:tomcat-jdbc:10.1.24")
+    implementation(libs.tomcat.jdbc)
 }
 
 flyway {

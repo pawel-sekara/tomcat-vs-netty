@@ -8,9 +8,13 @@ org-flywaydb-flyway = { id = "org.flywaydb.flyway", version = "10.13.0" }
 
 org-jooq-jooq-codegen-gradle = { id = "org.jooq.jooq-codegen-gradle", version = "3.19.8" }
 
+io-ktor-plugin = { id = "io.ktor.plugin", version = "2.3.11" }
+
 [versions]
 
 kotlin = "1.9.23"
+
+ktor = "2.3.11"
 
 [libraries]
 
@@ -35,3 +39,25 @@ jooq-codegen = "org.jooq:jooq-codegen:_"
 jooq-kotlin = "org.jooq:jooq-kotlin:_"
 
 jooq-kotlin-coroutines = "org.jooq:jooq-kotlin-coroutines:_"
+
+tomcat-jdbc = "org.apache.tomcat:tomcat-jdbc:_"
+
+ktor-bom = { group = "io.ktor", name = "ktor-bom", version.ref = "ktor" }
+
+ktor-server-core-jvm = { group = "io.ktor", name = "ktor-server-core-jvm", version.ref = "ktor" }
+
+ktor-serialization-kotlinx-json-jvm = { group = "io.ktor", name = "ktor-serialization-kotlinx-json-jvm", version.ref = "ktor" }
+
+ktor-server-content-negotiation-jvm = { group = "io.ktor", name = "ktor-server-content-negotiation-jvm", version.ref = "ktor" }
+
+ktor-serialization-jackson-jvm = { group = "io.ktor", name = "ktor-serialization-jackson-jvm", version.ref = "ktor" }
+
+ktor-server-call-logging-jvm = { group = "io.ktor", name = "ktor-server-call-logging-jvm", version.ref = "ktor" }
+
+ktor-server-call-id-jvm = { group = "io.ktor", name = "ktor-server-call-id-jvm", version.ref = "ktor" }
+
+ktor-server-netty-jvm = { group = "io.ktor", name = "ktor-server-netty-jvm", version.ref = "ktor" }
+
+ktor-server-config-yaml = { group = "io.ktor", name = "ktor-server-config-yaml", version.ref = "ktor" }
+
+jackson-datatype-jsr310 = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:_"
