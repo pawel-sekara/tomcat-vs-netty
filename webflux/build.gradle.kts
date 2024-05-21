@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm")
-    id("org.springframework.boot") version "3.2.5"
-    kotlin("plugin.spring") version "1.9.23"
+    id("org.springframework.boot")
+    kotlin("plugin.spring")
 }
 
 group = "dev.sekara.block.webflux"
@@ -14,12 +14,12 @@ repositories {
 dependencies {
     implementation(project(":db"))
     implementation(project(":domain"))
-    implementation("org.springframework.boot:spring-boot-starter-webflux:_")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:_")
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:_")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:_")
+    implementation(Spring.boot.webflux)
+    implementation(libs.jackson.module.kotlin)
+    implementation(Spring.reactor.kotlin)
+    implementation(libs.kotlin.reflect)
     implementation(libs.jackson.datatype.jsr310)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:_")
+    implementation(KotlinX.coroutines.reactor)
 }
 
 tasks.test {
