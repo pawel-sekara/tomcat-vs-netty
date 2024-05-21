@@ -1,0 +1,11 @@
+ktor:
+    application:
+        modules:
+            - dev.sekara.block.ktor.ApplicationKt.module
+    deployment:
+        port: 8081
+
+db:
+  uri: "r2dbc:postgresql://127.0.0.1:5432/ktor"
+  user: "root"
+  password: "root"

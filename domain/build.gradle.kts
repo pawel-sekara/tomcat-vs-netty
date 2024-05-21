@@ -11,6 +11,8 @@ repositories {
 
 dependencies {
     implementation(project(":db"))
+    implementation(libs.jooq)
+    implementation(KotlinX.coroutines.core)
 }
 
 tasks.test {
