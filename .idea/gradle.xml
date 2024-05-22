@@ -10,6 +10,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/db" />
             <option value="$PROJECT_DIR$/domain" />
+            <option value="$PROJECT_DIR$/gatling" />
             <option value="$PROJECT_DIR$/ktor" />
             <option value="$PROJECT_DIR$/mvc" />
             <option value="$PROJECT_DIR$/webflux" />
