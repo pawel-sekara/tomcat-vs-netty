@@ -4,6 +4,7 @@ import dev.sekara.block.domain.controller.BlockingNoteController
 import dev.sekara.block.domain.rest.NoteDto
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -21,7 +22,7 @@ class SpringNotesController(
     }
 
     @PutMapping
-    fun createNote(note: NoteDto): NoteDto {
+    fun createNote(@RequestBody note: NoteDto): NoteDto {
         return noteController.create(note)
     }
 

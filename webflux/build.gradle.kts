@@ -22,6 +22,7 @@ dependencies {
     implementation(Spring.reactor.kotlin)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
+    implementation(KotlinX.coroutines.core)
     implementation(libs.jackson.datatype.jsr310)
     implementation(Spring.reactor.kotlin)
 }

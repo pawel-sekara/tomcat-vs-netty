@@ -3,9 +3,9 @@ ktor:
         modules:
             - dev.sekara.block.ktor.ApplicationKt.module
     deployment:
-        port: 8081
+        port: 8080
 
 db:
-  uri: "r2dbc:postgresql://127.0.0.1:5432/ktor"
+  uri: "r2dbc:pool:postgresql://127.0.0.1:5432/ktor?initialSize=20&maxSize=100"
   user: "root"
   password: "root"

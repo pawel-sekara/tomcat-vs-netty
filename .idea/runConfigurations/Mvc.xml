@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Mvc" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <classpathModifications>
+      <entry exclude="true" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.projectreactor.netty/reactor-netty/0.9.25.RELEASE/3d41e20cf9fe423e89f4eb22b3866b3c64b00036/reactor-netty-0.9.25.RELEASE.jar" />
+    </classpathModifications>
+    <module name="blocking-vs-nonblocking.mvc.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="dev.sekara.block.mvc.MvcApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

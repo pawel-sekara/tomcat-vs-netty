@@ -12,7 +12,6 @@ class BlockingJooqContextHolder(
     driver: String,
     connectionInitialSize: Int = 20,
     connectionMaxActive: Int = 100,
-    connectionMaxIdle: Int = 100,
 ): JooqContextHolder {
 
     private val dataSource: javax.sql.DataSource = DataSource().apply {
@@ -22,7 +21,6 @@ class BlockingJooqContextHolder(
         this.password = password
         this.initialSize = connectionInitialSize
         this.maxActive = connectionMaxActive
-        this.maxIdle = connectionMaxIdle
         this.validationQuery = "SELECT 1;"
         this.isTestOnBorrow = true
         this.validationInterval = 0

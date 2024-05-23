@@ -28,6 +28,7 @@ dependencies {
     implementation(libs.jooq.kotlin)
     implementation(libs.jooq.kotlin.coroutines)
     implementation(libs.r2dbc.postgresql)
+    implementation(libs.r2dbc.pool)
     jooqCodegen(libs.postgresql)
     implementation(libs.flyway.core)
     implementation(libs.flyway.database.postgresql)

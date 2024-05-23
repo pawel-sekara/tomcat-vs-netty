@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Webflux" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="blocking-vs-nonblocking.webflux.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="dev.sekara.block.webflux.WebfluxApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -2,7 +2,9 @@ package dev.sekara.block.db
 
 import dev.sekara.block.db.schema.tables.records.NotesRecord
 import dev.sekara.block.db.schema.tables.references.NOTES
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirst
@@ -16,6 +18,7 @@ class NoteRepository(
         dsl.select()
             .from(NOTES)
             .asFlow()
+            .flowOn(Dispatchers.IO)
             .map { it.into(NOTES) }
 
     fun fetchAll(): List<NotesRecord> = dsl.select()

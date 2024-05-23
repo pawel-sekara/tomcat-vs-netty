@@ -14,6 +14,10 @@ org-springframework-boot = { id = "org.springframework.boot", version = "3.2.5" 
 
 org-jetbrains-kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 
+io-gatling-gradle = { id = "io.gatling.gradle", version = "3.11.2" }
+
+com-google-cloud-tools-jib = { id = "com.google.cloud.tools.jib", version = "3.4.1" }
+
 [versions]
 
 kotlin = "1.9.23"
@@ -71,3 +75,7 @@ jackson-module-kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:_"
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 
 kotlin-allopen-compiler-plugin-embeddable = { group = "org.jetbrains.kotlin", name = "kotlin-allopen-compiler-plugin-embeddable", version.ref = "kotlin" }
+
+r2dbc-pool = "io.r2dbc:r2dbc-pool:_"
+
+gatling-charts-highcharts = "io.gatling.highcharts:gatling-charts-highcharts:_"

@@ -1,10 +1,11 @@
 plugins {
     kotlin("jvm")
     id("io.ktor.plugin")
+    id("com.google.cloud.tools.jib")
 }
 
 group = "dev.sekara.block.ktor"
-version = "1.0-SNAPSHOT"
+version = "dev-1"
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
@@ -38,4 +39,24 @@ tasks.test {
 }
 kotlin {
     jvmToolchain(17)
+}
+
+jib {
+    from {
+        // Temurin has been chosen for its TCK compliance, switching from Temurin to any JDK is seamless
+        image = "${project.properties["baseImageRepoUri"]?.let { "$it/" } ?: ""}amazoncorretto:17"
+    }
+    container {
+        ports = listOf("8080")
+        mainClass = "io.ktor.server.netty.EngineMain"
+        jvmFlags = listOf(
+            "-server",
+            "-XX:InitialRAMPercentage=25",
+            "-XX:MaxRAMPercentage=75",
+            "-XX:+UseG1GC",
+            "-XX:MaxGCPauseMillis=100",
+            "-XX:+UseStringDeduplication",
+            "-Daws.crt.log.destination=STDOUT",
+        )
+    }
 }

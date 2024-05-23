@@ -1,43 +1,36 @@
 package dev.sekara.block.gatling
 
-import io.gatling.core.body.BodyWithStringExpression
-import io.gatling.core.body.StringBody
-import io.gatling.javaapi.core.Body
-import io.gatling.javaapi.core.CoreDsl
+import io.gatling.javaapi.core.CoreDsl.constantConcurrentUsers
+import io.gatling.javaapi.core.CoreDsl.constantUsersPerSec
 import io.gatling.javaapi.core.CoreDsl.exec
-import io.gatling.javaapi.core.CoreDsl.rampUsers
 import io.gatling.javaapi.core.CoreDsl.rampUsersPerSec
 import io.gatling.javaapi.core.CoreDsl.scenario
 import io.gatling.javaapi.core.Simulation
 import io.gatling.javaapi.http.HttpDsl.http
 import io.gatling.javaapi.http.HttpDsl.status
-import kotlin.random.Random
 
 class TestSimulation : Simulation() {
 
+    val getLast = exec(
+        http("Get 100").get("").queryParam("limit", "100").check(status().shouldBe(200))
+    )
+
     val getAll = exec(
-        http("Get all").get("").check(status().shouldBe(200))
+        http("Get All").get("").check(status().shouldBe(200))
     )
 
-    val insert = exec(
-        http("Insert").put("")
-            .body(CoreDsl.StringBody("""
-            {
-                "content": "Hello Gatling! ${Random.nextLong()}"
-            }
-            """.trimIndent())).check(status().shouldBe(200))
-    )
-
-    val httpProtocol = http.baseUrl("http://127.0.0.1:8081/notes")
+    val httpProtocol = http.baseUrl("http://127.0.0.1:8080/notes")
         .contentTypeHeader("application/json")
+        .shareConnections()
 
-    val gets = scenario("Gets").exec(getAll)
-    val inserts = scenario("Inserts").exec(insert)
+    val last = scenario("Gets Last").exec(getLast)
+    val all = scenario("Gets All").exec(getAll)
 
     init {
         setUp(
-            gets.injectOpen(rampUsersPerSec(100.0).to(200.0).during(60)),
-            inserts.injectOpen(rampUsersPerSec(10.0).to(100.0).during(40))
+            last.injectClosed(constantConcurrentUsers(750).during(30))
+//            last.injectOpen(rampUsersPerSec(0.0).to(1000.0).during(60)),
+//            all.injectOpen(constantUsersPerSec(0.2).during(60)),
         ).protocols(httpProtocol)
     }
 }

@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm")
-    id("io.gatling.gradle") version "3.11.2"
+    id("io.gatling.gradle")
 }
 
 group = "dev.sekara.block.gatling"
@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-//    implementation("io.gatling.highcharts:gatling-charts-highcharts:3.11.2")
+//    implementation(libs.gatling.charts.highcharts)
 }
 
 gatling {
