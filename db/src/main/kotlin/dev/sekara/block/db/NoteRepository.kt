@@ -31,6 +31,7 @@ class NoteRepository(
             .orderBy(NOTES.CREATED_AT.desc())
             .limit(limit)
             .asFlow()
+            .flowOn(Dispatchers.IO)
             .map { it.into(NOTES) }
 
     fun fetchLast(limit: Int): List<NotesRecord> = dsl.select()
