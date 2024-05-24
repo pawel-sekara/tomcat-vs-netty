@@ -3,7 +3,7 @@ package dev.sekara.block.ktor.config
 import dev.sekara.block.db.NoteRepository
 import dev.sekara.block.db.ReactiveJooqContextHolder
 import io.ktor.server.config.ApplicationConfig
-import dev.sekara.block.domain.controller.ReactiveNoteController
+import dev.sekara.block.domain.controller.ReactiveTestController
 import dev.sekara.block.domain.service.NoteService
 
 class Dependencies(config: ApplicationConfig) {
@@ -14,5 +14,5 @@ class Dependencies(config: ApplicationConfig) {
     )
     private val repository = NoteRepository(contextHolder = jooqContextHolder)
     private val noteService = NoteService(repository = repository)
-    val notesController = ReactiveNoteController(noteService = noteService)
+    val testController = ReactiveTestController(noteService = noteService)
 }

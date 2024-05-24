@@ -1,6 +1,6 @@
 package dev.sekara.block.webflux.config
 
-import dev.sekara.block.domain.controller.ReactiveNoteController
+import dev.sekara.block.domain.controller.ReactiveTestController
 import dev.sekara.block.domain.rest.NoteDto
 import kotlinx.coroutines.flow.toList
 import org.springframework.context.annotation.Bean
@@ -15,7 +15,7 @@ import org.springframework.web.reactive.function.server.queryParamOrNull
 class RoutingConfig {
 
     @Bean
-    suspend fun notesRoute(controller: ReactiveNoteController) = coRouter {
+    suspend fun notesRoute(controller: ReactiveTestController) = coRouter {
         "/notes".nest {
             GET("") {
                 val flow =
@@ -27,6 +27,22 @@ class RoutingConfig {
                 val note = it.awaitBody<NoteDto>()
                 ServerResponse.ok().bodyValueAndAwait(controller.create(note))
             }
+        }
+
+        GET("/test/cpu-heavy") {
+            ServerResponse.ok().bodyValueAndAwait(controller.heavy())
+        }
+
+        GET("/test/cpu-lite") {
+            ServerResponse.ok().bodyValueAndAwait(controller.lite())
+        }
+
+        GET("/test/large-string") {
+            ServerResponse.ok().bodyValueAndAwait(controller.largeString())
+        }
+
+        GET("/test/large-object") {
+            ServerResponse.ok().bodyValueAndAwait(controller.largeObject())
         }
     }
 }

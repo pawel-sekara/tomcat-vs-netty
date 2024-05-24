@@ -1,15 +1,9 @@
 package dev.sekara.block.webflux.config
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import dev.sekara.block.db.JooqContextHolder
 import dev.sekara.block.db.NoteRepository
 import dev.sekara.block.db.ReactiveJooqContextHolder
-import dev.sekara.block.domain.controller.ReactiveNoteController
+import dev.sekara.block.domain.controller.ReactiveTestController
 import dev.sekara.block.domain.service.NoteService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -37,6 +31,6 @@ class AppConfig {
         NoteService(noteRepository)
 
     @Bean
-    fun noteController(noteService: NoteService): ReactiveNoteController =
-        ReactiveNoteController(noteService)
+    fun noteController(noteService: NoteService): ReactiveTestController =
+        ReactiveTestController(noteService)
 }

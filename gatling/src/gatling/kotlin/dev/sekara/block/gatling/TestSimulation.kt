@@ -1,68 +1,98 @@
 package dev.sekara.block.gatling
 
 import io.gatling.javaapi.core.CoreDsl.StringBody
-import io.gatling.javaapi.core.CoreDsl.constantUsersPerSec
-import io.gatling.javaapi.core.CoreDsl.exec
-import io.gatling.javaapi.core.CoreDsl.exitBlockOnFail
-import io.gatling.javaapi.core.CoreDsl.rampConcurrentUsers
-import io.gatling.javaapi.core.CoreDsl.rampUsersPerSec
+import io.gatling.javaapi.core.CoreDsl.group
+import io.gatling.javaapi.core.CoreDsl.incrementConcurrentUsers
+import io.gatling.javaapi.core.CoreDsl.incrementUsersPerSec
 import io.gatling.javaapi.core.CoreDsl.scenario
-import io.gatling.javaapi.core.OpenInjectionStep
-import io.gatling.javaapi.core.OpenInjectionStep.nothingFor
-import io.gatling.javaapi.core.PauseType
+import io.gatling.javaapi.core.PopulationBuilder
 import io.gatling.javaapi.core.Simulation
+import io.gatling.javaapi.http.Http
 import io.gatling.javaapi.http.HttpDsl.http
-import io.gatling.javaapi.http.HttpDsl.status
-import java.time.Duration
+import io.gatling.javaapi.http.HttpRequestActionBuilder
 import java.util.UUID
 
-const val ip = "193.164.254.220"
+const val ip = "127.0.0.1"
 
 class TestSimulation : Simulation() {
 
-    val getLast = exec(
-        http("Get 100").get("").queryParam("limit", "100").check(status().shouldBe(200))
-    )
+    val ktorServer = Server("ktor", ip, 8081)
+    val webfluxServer = Server("webflux", ip, 8082)
+    val mvcServer = Server("mvc", ip, 8083)
 
-    val getAll = exec(
-        http("Get All").get("").check(status().shouldBe(200))
-    )
+    fun closedScenario(scenario: Scenario) =
+        incrementConcurrent(ktorServer, scenario)
+            .andThen(incrementConcurrent(webfluxServer, scenario))
+            .andThen(incrementConcurrent(mvcServer, scenario))
 
-    val ktor = http.baseUrl("http://$ip:8081/notes").contentTypeHeader("application/json").shareConnections()
-    val webflux = http.baseUrl("http://$ip:8082/notes").contentTypeHeader("application/json").shareConnections()
-    val mvc = http.baseUrl("http://$ip:8083/notes").contentTypeHeader("application/json").shareConnections()
+    fun openScenario(scenario: Scenario) =
+        increment(ktorServer, scenario)
+            .andThen(increment(webfluxServer, scenario))
+            .andThen(increment(mvcServer, scenario))
 
-    val last = scenario("Gets Last").exec(getLast)
-    val all = scenario("Gets All").exec(getAll)
+    val insert = Scenario("Insert") {
+        it.put("/notes").body(StringBody("{\"content\":\"Hello Gatling ${UUID.randomUUID()}\"}"))
+    }
+    val cpuIntensive = Scenario("Cpu intensive") { it.get("/test/cpu-heavy") }
+    val cpuLight = Scenario("lite") { it.get("/test/cpu-lite") }
+    val largeString = Scenario("largeString") { it.get("/test/large-string") }
+    val largeObject = Scenario("largeObject") { it.get("/test/large-object") }
 
     init {
         setUp(
-            insertConcurrent("ktor").protocols(ktor)
-                .andThen(insertConcurrent("webflux").protocols(webflux))
-                .andThen(insertConcurrent("mvc").protocols(mvc))
+            closedScenario(insert)
+                .andThen(closedScenario(cpuLight))
+                .andThen(closedScenario(largeString))
+                .andThen(closedScenario(largeObject))
+                .andThen(closedScenario(cpuIntensive))
+                // open scenarios
+                .andThen(openScenario(insert))
+                .andThen(openScenario(cpuLight))
+                .andThen(openScenario(largeString))
+//                .andThen(openScenario(largeObject))
+//                .andThen(openScenario(cpuIntensive))
         )
     }
 
-    private fun insert(name: String) = scenario(name).exec(
-        exec(insertHttp(name))
-    ).injectOpen(
-        rampUsersPerSec(0.0).to(8000.0).during(30),
-        nothingFor(Duration.ofSeconds(5))
-    )
-
-    private fun insertConcurrent(name: String) = scenario(name).exec(
-        exec(insertHttp(name))
-    ).injectClosed(
-        rampConcurrentUsers(0).to(5000).during(30),
-    )
-
-    private fun insertHttp(name: String) = exitBlockOnFail().on(
-        http("Insert $name").put("").body(
-            StringBody(
-                """
-                    {"content":"Hello Gatling ${UUID.randomUUID()}"}
-                """.trimIndent()
+    private fun incrementConcurrent(server: Server, scenario: Scenario): PopulationBuilder =
+        scenario("Closed ${server.name} ${scenario.name}").exec(
+            group(server.name).on(
+                scenario.action("Closed ${server.name}")
             )
-        )
-    )
+        ).injectClosed(
+            incrementConcurrentUsers(200)
+                .times(10)
+                .eachLevelLasting(5)
+                .startingFrom(200)
+        ).protocols(server.protocol)
+
+    private fun increment(server: Server, scenario: Scenario) =
+        scenario("Open ${server.name} ${scenario.name}").exec(
+            group(server.name).on(
+                scenario.action("Open ${server.name}")
+            )
+        ).injectOpen(
+            incrementUsersPerSec(850.0)
+                .times(10)
+                .eachLevelLasting(5)
+                .startingFrom(850.0)
+        ).protocols(server.protocol)
+
+    data class Scenario(
+        val name: String,
+        val call: (Http) -> HttpRequestActionBuilder,
+    ) {
+        val action: (String) -> HttpRequestActionBuilder = { call(http("$name $it")) }
+    }
+
+    data class Server(
+        val name: String,
+        val ip: String,
+        val port: Int,
+    ) {
+        val protocol = http.baseUrl("http://$ip:$port")
+            .contentTypeHeader("application/json")
+            .shareConnections()
+            .warmUp("http://$ip:$port/notes?limit=1")
+    }
 }

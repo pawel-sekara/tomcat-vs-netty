@@ -5,17 +5,18 @@ import dev.sekara.block.domain.extension.toDto
 import dev.sekara.block.domain.extension.toEntity
 import dev.sekara.block.domain.rest.NoteDto
 import dev.sekara.block.domain.service.NoteService
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-class BlockingNoteController(
+class ReactiveTestController(
     private val noteService: NoteService,
-) {
-
-    fun getAll(): List<NoteDto> = noteService.getAll()
+) : BaseController() {
+    fun getAll(): Flow<NoteDto> = noteService.cGetAll()
         .map(Note::toDto)
 
-    fun getLast(limit: Int): List<NoteDto> = noteService.getLast(limit)
+    fun getLast(limit: Int): Flow<NoteDto> = noteService.cGetLast(limit)
         .map(Note::toDto)
 
-    fun create(note: NoteDto): NoteDto = noteService.insert(note.toEntity())?.toDto()
+    suspend fun create(note: NoteDto): NoteDto = noteService.cInsert(note.toEntity())?.toDto()
         ?: throw RuntimeException("Could not create new note with id ${note.id}")
 }

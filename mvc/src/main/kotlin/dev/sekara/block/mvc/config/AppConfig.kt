@@ -7,8 +7,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import dev.sekara.block.db.BlockingJooqContextHolder
 import dev.sekara.block.db.JooqContextHolder
 import dev.sekara.block.db.NoteRepository
-import dev.sekara.block.domain.controller.BlockingNoteController
-import dev.sekara.block.domain.controller.ReactiveNoteController
+import dev.sekara.block.domain.controller.BlockingTestController
 import dev.sekara.block.domain.service.NoteService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -45,8 +44,8 @@ class AppConfig : WebMvcConfigurer {
         NoteService(noteRepository)
 
     @Bean
-    fun noteController(noteService: NoteService): BlockingNoteController =
-        BlockingNoteController(noteService)
+    fun noteController(noteService: NoteService): BlockingTestController =
+        BlockingTestController(noteService)
 
     @Bean
     fun objectMapper() = jacksonObjectMapper()

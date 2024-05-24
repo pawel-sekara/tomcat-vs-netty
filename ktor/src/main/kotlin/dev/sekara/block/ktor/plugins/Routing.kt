@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.toList
 
 fun Application.configureRouting(dependencies: Dependencies) {
     routing {
-        val controller = dependencies.notesController
+        val controller = dependencies.testController
 
         route("/notes") {
             get {
@@ -26,6 +26,22 @@ fun Application.configureRouting(dependencies: Dependencies) {
                 val created = controller.create(call.receive<NoteDto>())
                 call.respond(HttpStatusCode.OK, created)
             }
+        }
+
+        get("/test/cpu-heavy") {
+           call.respond(HttpStatusCode.OK, controller.heavy())
+        }
+
+        get("/test/cpu-lite") {
+           call.respond(HttpStatusCode.OK, controller.lite())
+        }
+
+        get("/test/large-string") {
+           call.respond(HttpStatusCode.OK, controller.largeString())
+        }
+
+        get("/test/large-object") {
+           call.respond(HttpStatusCode.OK, controller.largeObject())
         }
     }
 }
