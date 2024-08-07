@@ -4,7 +4,7 @@ services:
   db:
     image: arm64v8/postgres:latest
     container_name: postgres_local
-    command: -c 'max_connections=50000'
+    command: -c 'max_connections=1000'
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root

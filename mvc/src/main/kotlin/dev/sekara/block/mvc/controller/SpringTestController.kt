@@ -43,4 +43,26 @@ class SpringTestController(
     fun largeObject(): List<NoteDto> {
         return testController.largeObject()
     }
+
+    @GetMapping("/test/block")
+    fun blockingOperation() {
+        testController.blockingOp()
+    }
+
+    @GetMapping("/test/synchronization")
+    fun blockingSynchronization() {
+        testController.blockingIncrement()
+    }
+
+    @GetMapping("/test/synchronization-mutex")
+    fun mutexSynchronization() {
+        // Not applicable
+    }
+
+    @GetMapping("/test/synchronization-context")
+    fun contextSynchronization() {
+        // Not applicable
+    }
+
+
 }

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.awaitBody
 import org.springframework.web.reactive.function.server.bodyValueAndAwait
+import org.springframework.web.reactive.function.server.buildAndAwait
 import org.springframework.web.reactive.function.server.coRouter
 import org.springframework.web.reactive.function.server.queryParamOrNull
 
@@ -44,5 +45,26 @@ class RoutingConfig {
         GET("/test/large-object") {
             ServerResponse.ok().bodyValueAndAwait(controller.largeObject())
         }
+
+        GET("/test/block") {
+            controller.blockingOp()
+            ServerResponse.ok().buildAndAwait()
+        }
+
+        GET("/test/synchronization") {
+            controller.blockingIncrement()
+            ServerResponse.ok().buildAndAwait()
+        }
+
+        GET("/test/synchronization-mutex") {
+            controller.mutexIncrement()
+            ServerResponse.ok().buildAndAwait()
+        }
+
+        GET("/test/synchronization-context") {
+            controller.contextIncrement()
+            ServerResponse.ok().buildAndAwait()
+        }
+
     }
 }

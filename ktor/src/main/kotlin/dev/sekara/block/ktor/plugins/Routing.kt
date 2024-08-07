@@ -29,19 +29,39 @@ fun Application.configureRouting(dependencies: Dependencies) {
         }
 
         get("/test/cpu-heavy") {
-           call.respond(HttpStatusCode.OK, controller.heavy())
+            call.respond(HttpStatusCode.OK, controller.heavy())
         }
 
         get("/test/cpu-lite") {
-           call.respond(HttpStatusCode.OK, controller.lite())
+            call.respond(HttpStatusCode.OK, controller.lite())
         }
 
         get("/test/large-string") {
-           call.respond(HttpStatusCode.OK, controller.largeString())
+            call.respond(HttpStatusCode.OK, controller.largeString())
         }
 
         get("/test/large-object") {
-           call.respond(HttpStatusCode.OK, controller.largeObject())
+            call.respond(HttpStatusCode.OK, controller.largeObject())
+        }
+
+        get("/test/block") {
+            controller.blockingOp()
+            call.respond(HttpStatusCode.OK)
+        }
+
+        get("/test/synchronization") {
+            controller.blockingIncrement()
+            call.respond(HttpStatusCode.OK)
+        }
+
+        get("/test/synchronization-mutex") {
+            controller.mutexIncrement()
+            call.respond(HttpStatusCode.OK)
+        }
+
+        get("/test/synchronization-context") {
+            controller.contextIncrement()
+            call.respond(HttpStatusCode.OK)
         }
     }
 }

@@ -5,6 +5,10 @@ import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
 
 open class BaseController {
+
+    @Volatile
+    protected var counter: Long = 0
+
     fun lite(): Int {
         return (1..100000 + ThreadLocalRandom.current().nextInt(1000))
             .reduce { acc, i -> acc + i }
@@ -18,6 +22,16 @@ open class BaseController {
     fun largeString(): String = largeJson
 
     fun largeObject(): List<NoteDto> = largeObject
+
+    fun blockingOp() {
+        Thread.sleep(1000)
+    }
+
+    fun blockingIncrement() {
+        synchronized(this) {
+            counter++
+        }
+    }
 
     companion object {
         private val row = "{\"key\":\"value\"},"
