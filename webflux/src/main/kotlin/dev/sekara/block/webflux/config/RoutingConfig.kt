@@ -3,6 +3,7 @@ package dev.sekara.block.webflux.config
 import dev.sekara.block.domain.controller.ReactiveTestController
 import dev.sekara.block.domain.rest.NoteDto
 import kotlinx.coroutines.flow.toList
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -53,6 +54,7 @@ class RoutingConfig {
 
         GET("/test/synchronization") {
             controller.blockingIncrement()
+            LoggerFactory.getLogger("RoutingConfig").info("Incremented counter")
             ServerResponse.ok().buildAndAwait()
         }
 

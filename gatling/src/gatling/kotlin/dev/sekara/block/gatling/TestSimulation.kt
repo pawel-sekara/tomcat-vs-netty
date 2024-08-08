@@ -12,7 +12,7 @@ import io.gatling.javaapi.http.HttpDsl.http
 import io.gatling.javaapi.http.HttpRequestActionBuilder
 import java.util.UUID
 
-const val ip = "54.175.70.211"
+const val ip = "54.152.77.88"
 
 class TestSimulation : Simulation() {
 
@@ -25,7 +25,7 @@ class TestSimulation : Simulation() {
             .andThen(incrementConcurrent(webfluxServer, scenario))
             .andThen(incrementConcurrent(mvcServer, scenario))
 
-    fun openScenario(scenario: Scenario, rpsIncrements: Double = 50.0) =
+    fun openScenario(scenario: Scenario, rpsIncrements: Double = 150.0) =
         increment(ktorServer, scenario, rpsIncrements)
             .andThen(increment(webfluxServer, scenario, rpsIncrements))
             .andThen(increment(mvcServer, scenario, rpsIncrements))
@@ -38,21 +38,21 @@ class TestSimulation : Simulation() {
     val largeString = Scenario("largeString") { it.get("/test/large-string") }
     val largeObject = Scenario("largeObject") { it.get("/test/large-object") }
     val blocking = Scenario("blocking") { it.get("/test/block") }
-    val synchronized = Scenario("synchronized") { it.get("/test/block") }
-    val mutex = Scenario("mutex") { it.get("/test/block") }
-    val context = Scenario("context") { it.get("/test/block") }
+    val synchronized = Scenario("synchronized") { it.get("/test/synchronization") }
+    val mutex = Scenario("mutex") { it.get("/test/synchronization-mutex") }
+    val context = Scenario("context") { it.get("/test/synchronization-context") }
 
     init {
         setUp(
                 openScenario(insert)
                 .andThen(openScenario(cpuLight))
-                .andThen(openScenario(largeString))
-                .andThen(openScenario(blocking, 5.0))
-                .andThen(openScenario(largeObject, 50.0))
-                .andThen(openScenario(cpuIntensive, 50.0))
-                .andThen(openScenario(synchronized, 50.0))
-                .andThen(openScenario(mutex, 50.0))
-                .andThen(openScenario(context, 50.0))
+                .andThen(openScenario(largeString, 25.0))
+                .andThen(openScenario(blocking, 2.0))
+//                .andThen(openScenario(largeObject, 50.0))
+                .andThen(openScenario(cpuIntensive, 2.0))
+                .andThen(openScenario(synchronized))
+                .andThen(openScenario(mutex))
+                .andThen(openScenario(context))
         )
     }
 
@@ -60,7 +60,7 @@ class TestSimulation : Simulation() {
         scenario("Closed ${server.name} ${scenario.name}").exec(
             group(server.name).on(
                 scenario.action("Closed ${server.name}")
-            )
+            ).exitHereIfFailed()
         ).injectClosed(
             incrementConcurrentUsers(50)
                 .times(10)
@@ -72,11 +72,11 @@ class TestSimulation : Simulation() {
         scenario("Open ${server.name} ${scenario.name}").exec(
             group(server.name).on(
                 scenario.action("Open ${server.name}")
-            )
+            ).exitHereIfFailed()
         ).injectOpen(
             incrementUsersPerSec(rpsIncrements)
-                .times(20)
-                .eachLevelLasting(3)
+                .times(10)
+                .eachLevelLasting(5)
                 .startingFrom(rpsIncrements)
         ).protocols(server.protocol)
 
