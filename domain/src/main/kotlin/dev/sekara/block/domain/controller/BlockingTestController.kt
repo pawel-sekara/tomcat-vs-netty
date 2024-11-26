@@ -1,5 +1,6 @@
 package dev.sekara.block.domain.controller
 
+import dev.sekara.block.domain.client.httpbin.HttpBinClient
 import dev.sekara.block.domain.entity.Note
 import dev.sekara.block.domain.extension.toDto
 import dev.sekara.block.domain.extension.toEntity
@@ -8,7 +9,8 @@ import dev.sekara.block.domain.service.NoteService
 
 class BlockingTestController(
     private val noteService: NoteService,
-) : BaseController() {
+    httpBinClient: HttpBinClient
+) : BaseController(httpBinClient) {
 
     fun getAll(): List<NoteDto> = noteService.getAll()
         .map(Note::toDto)

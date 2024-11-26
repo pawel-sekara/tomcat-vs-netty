@@ -3,7 +3,6 @@ package dev.sekara.block.webflux.config
 import dev.sekara.block.domain.controller.ReactiveTestController
 import dev.sekara.block.domain.rest.NoteDto
 import kotlinx.coroutines.flow.toList
-import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.ServerResponse
@@ -17,7 +16,7 @@ import org.springframework.web.reactive.function.server.queryParamOrNull
 class RoutingConfig {
 
     @Bean
-    suspend fun notesRoute(controller: ReactiveTestController) = coRouter {
+    suspend fun route(controller: ReactiveTestController) = coRouter {
         "/notes".nest {
             GET("") {
                 val flow =
@@ -54,7 +53,11 @@ class RoutingConfig {
 
         GET("/test/synchronization") {
             controller.blockingIncrement()
-            LoggerFactory.getLogger("RoutingConfig").info("Incremented counter")
+            ServerResponse.ok().buildAndAwait()
+        }
+
+        GET("/test/synchronization-lock") {
+            controller.lockIncrement()
             ServerResponse.ok().buildAndAwait()
         }
 
@@ -65,6 +68,11 @@ class RoutingConfig {
 
         GET("/test/synchronization-context") {
             controller.contextIncrement()
+            ServerResponse.ok().buildAndAwait()
+        }
+
+        GET("/test/external-call") {
+            controller.externalCall()
             ServerResponse.ok().buildAndAwait()
         }
 

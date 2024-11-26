@@ -54,6 +54,11 @@ fun Application.configureRouting(dependencies: Dependencies) {
             call.respond(HttpStatusCode.OK)
         }
 
+        get("/test/synchronization-lock") {
+            controller.lockIncrement()
+            call.respond(HttpStatusCode.OK)
+        }
+
         get("/test/synchronization-mutex") {
             controller.mutexIncrement()
             call.respond(HttpStatusCode.OK)
@@ -61,6 +66,11 @@ fun Application.configureRouting(dependencies: Dependencies) {
 
         get("/test/synchronization-context") {
             controller.contextIncrement()
+            call.respond(HttpStatusCode.OK)
+        }
+
+        get("/test/external-call") {
+            controller.externalCall()
             call.respond(HttpStatusCode.OK)
         }
     }

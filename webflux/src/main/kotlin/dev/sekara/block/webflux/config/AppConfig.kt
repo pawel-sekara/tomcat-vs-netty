@@ -1,8 +1,10 @@
 package dev.sekara.block.webflux.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import dev.sekara.block.db.JooqContextHolder
 import dev.sekara.block.db.NoteRepository
 import dev.sekara.block.db.ReactiveJooqContextHolder
+import dev.sekara.block.domain.client.httpbin.reactive.ReactiveHttpBinClient
 import dev.sekara.block.domain.controller.ReactiveTestController
 import dev.sekara.block.domain.service.NoteService
 import org.springframework.beans.factory.annotation.Value
@@ -31,6 +33,9 @@ class AppConfig {
         NoteService(noteRepository)
 
     @Bean
-    fun noteController(noteService: NoteService): ReactiveTestController =
-        ReactiveTestController(noteService)
+    fun noteController(noteService: NoteService, httpBinClient: ReactiveHttpBinClient): ReactiveTestController =
+        ReactiveTestController(noteService, httpBinClient)
+
+    @Bean
+    fun httpBinClient(objectMapper: ObjectMapper) = ReactiveHttpBinClient(objectMapper)
 }

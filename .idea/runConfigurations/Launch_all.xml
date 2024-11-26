@@ -1,7 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Launch all" type="CompoundRunConfigurationType">
     <toRun name="Ktor" type="KtorApplicationConfigurationType" />
-    <toRun name="Warmup" type="ShConfigurationType" />
     <toRun name="Mvc" type="SpringBootApplicationConfigurationType" />
     <toRun name="Webflux" type="SpringBootApplicationConfigurationType" />
     <method v="2" />

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import dev.sekara.block.db.BlockingJooqContextHolder
 import dev.sekara.block.db.JooqContextHolder
 import dev.sekara.block.db.NoteRepository
+import dev.sekara.block.domain.client.httpbin.blocking.BlockingHttpBinClient
 import dev.sekara.block.domain.controller.BlockingTestController
 import dev.sekara.block.domain.service.NoteService
 import org.springframework.beans.factory.annotation.Value
@@ -45,7 +46,10 @@ class AppConfig : WebMvcConfigurer {
 
     @Bean
     fun noteController(noteService: NoteService): BlockingTestController =
-        BlockingTestController(noteService)
+        BlockingTestController(noteService, blockingHttpBinClient())
+
+    @Bean
+    fun blockingHttpBinClient() = BlockingHttpBinClient(objectMapper())
 
     @Bean
     fun objectMapper() = jacksonObjectMapper()

@@ -1,11 +1,14 @@
 package dev.sekara.block.domain.controller
 
+import dev.sekara.block.domain.client.httpbin.HttpBinClient
+import dev.sekara.block.domain.client.httpbin.reactive.ReactiveHttpBinClient
 import dev.sekara.block.domain.entity.Note
 import dev.sekara.block.domain.extension.toDto
 import dev.sekara.block.domain.extension.toEntity
 import dev.sekara.block.domain.rest.NoteDto
 import dev.sekara.block.domain.service.NoteService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.newSingleThreadContext
@@ -15,7 +18,8 @@ import kotlinx.coroutines.withContext
 
 class ReactiveTestController(
     private val noteService: NoteService,
-) : BaseController() {
+    httpBinClient: HttpBinClient
+) : BaseController(httpBinClient) {
 
     private val incrementMutex = Mutex()
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -32,12 +36,14 @@ class ReactiveTestController(
 
     suspend fun mutexIncrement() {
         incrementMutex.withLock {
+            delay(1)
             counter++
         }
     }
 
     suspend fun contextIncrement() {
         withContext(counterContext) {
+            delay(1)
             counter++
         }
     }

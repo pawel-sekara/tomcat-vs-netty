@@ -1,13 +1,23 @@
 package dev.sekara.block.domain.controller
 
+import dev.sekara.block.domain.client.httpbin.HttpBinClient
 import dev.sekara.block.domain.rest.NoteDto
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.random.Random
+import kotlin.random.Random.Default
 
-open class BaseController {
+open class BaseController(
+    private val httpBinClient: HttpBinClient
+) {
 
     @Volatile
     protected var counter: Long = 0
+
+    private val lock = ReentrantLock()
 
     fun lite(): Int {
         return (1..100000 + ThreadLocalRandom.current().nextInt(1000))
@@ -27,9 +37,23 @@ open class BaseController {
         Thread.sleep(1000)
     }
 
+    fun lockIncrement() {
+        lock.lock()
+        runBlocking { delay(1) }
+        counter++
+        lock.unlock()
+    }
+
     fun blockingIncrement() {
         synchronized(this) {
+            runBlocking { delay(1) }
             counter++
+        }
+    }
+
+    suspend fun externalCall(): Map<String, Any> {
+        return Random.nextDouble(0.0, 0.1).let {
+            httpBinClient.networkCall(it)
         }
     }
 

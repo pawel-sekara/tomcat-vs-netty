@@ -12,7 +12,7 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
     val dependencies = Dependencies(environment.config)
-    configureSerialization()
+    configureSerialization(dependencies)
     configureMonitoring()
     configureRouting(dependencies)
 }

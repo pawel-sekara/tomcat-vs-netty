@@ -1,5 +1,6 @@
 package dev.sekara.block.gatling
 
+import io.gatling.javaapi.core.CoreDsl
 import io.gatling.javaapi.core.CoreDsl.StringBody
 import io.gatling.javaapi.core.CoreDsl.group
 import io.gatling.javaapi.core.CoreDsl.incrementConcurrentUsers
@@ -12,7 +13,7 @@ import io.gatling.javaapi.http.HttpDsl.http
 import io.gatling.javaapi.http.HttpRequestActionBuilder
 import java.util.UUID
 
-const val ip = "54.152.77.88"
+const val ip = "127.0.0.1"
 
 class TestSimulation : Simulation() {
 
@@ -25,34 +26,40 @@ class TestSimulation : Simulation() {
             .andThen(incrementConcurrent(webfluxServer, scenario))
             .andThen(incrementConcurrent(mvcServer, scenario))
 
-    fun openScenario(scenario: Scenario, rpsIncrements: Double = 150.0) =
-        increment(ktorServer, scenario, rpsIncrements)
+    fun openScenario(scenario: Scenario, rpsIncrements: Double = 10.0) =
+        increment(mvcServer, scenario, rpsIncrements)
             .andThen(increment(webfluxServer, scenario, rpsIncrements))
-            .andThen(increment(mvcServer, scenario, rpsIncrements))
+            .andThen(increment(ktorServer, scenario, rpsIncrements))
 
     val insert = Scenario("Insert") {
         it.put("/notes").body(StringBody("{\"content\":\"Hello Gatling ${UUID.randomUUID()}\"}"))
     }
+    val last = Scenario("query") { it.get("/notes?limit=10") }
     val cpuIntensive = Scenario("Cpu intensive") { it.get("/test/cpu-heavy") }
     val cpuLight = Scenario("lite") { it.get("/test/cpu-lite") }
     val largeString = Scenario("largeString") { it.get("/test/large-string") }
     val largeObject = Scenario("largeObject") { it.get("/test/large-object") }
     val blocking = Scenario("blocking") { it.get("/test/block") }
     val synchronized = Scenario("synchronized") { it.get("/test/synchronization") }
+    val lock = Scenario("synchronized-lock") { it.get("/test/synchronization-lock") }
     val mutex = Scenario("mutex") { it.get("/test/synchronization-mutex") }
     val context = Scenario("context") { it.get("/test/synchronization-context") }
+    val call = Scenario("call") { it.get("/test/external-call") }
 
     init {
         setUp(
-                openScenario(insert)
-                .andThen(openScenario(cpuLight))
-                .andThen(openScenario(largeString, 25.0))
-                .andThen(openScenario(blocking, 2.0))
+//                openScenario(insert)
+//                .andThen(openScenario(cpuLight))
+//                .andThen(openScenario(largeString, 25.0))
+//                .andThen(openScenario(blocking, 2.0))
 //                .andThen(openScenario(largeObject, 50.0))
-                .andThen(openScenario(cpuIntensive, 2.0))
-                .andThen(openScenario(synchronized))
-                .andThen(openScenario(mutex))
-                .andThen(openScenario(context))
+//                .andThen(openScenario(cpuIntensive, 2.0))
+            openScenario(call, 10.0)
+//                .andThen(openScenario(lock, 1500.0))
+//                .andThen(openScenario(mutex, 150.0))
+//                .andThen(openScenario(context, 1500.0))
+//                .andThen(openScenario(last))
+
         )
     }
 
@@ -72,13 +79,15 @@ class TestSimulation : Simulation() {
         scenario("Open ${server.name} ${scenario.name}").exec(
             group(server.name).on(
                 scenario.action("Open ${server.name}")
-            ).exitHereIfFailed()
-        ).injectOpen(
-            incrementUsersPerSec(rpsIncrements)
-                .times(10)
-                .eachLevelLasting(5)
-                .startingFrom(rpsIncrements)
-        ).protocols(server.protocol)
+            )
+        ).exitHereIfFailed()
+            .injectOpen(
+                incrementUsersPerSec(rpsIncrements)
+                    .times(6)
+                    .eachLevelLasting(5)
+                    .separatedByRampsLasting(5)
+                    .startingFrom(rpsIncrements)
+            ).protocols(server.protocol)
 
     data class Scenario(
         val name: String,

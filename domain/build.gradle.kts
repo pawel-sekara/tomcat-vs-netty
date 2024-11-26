@@ -13,6 +13,14 @@ dependencies {
     implementation(project(":db"))
     implementation(libs.jooq)
     implementation(KotlinX.coroutines.core)
+    implementation(Square.Retrofit2.retrofit)
+    implementation(Square.Retrofit2.converter.jackson)
+    implementation(Square.OkHttp3.okHttp)
+    implementation(Ktor.client.core)
+    implementation(Ktor.client.cio)
+    implementation(Ktor.client.contentNegotiation)
+    implementation(libs.jackson.datatype.jsr310)
+    implementation(Ktor.plugins.serialization.jackson)
 }
 
 tasks.test {

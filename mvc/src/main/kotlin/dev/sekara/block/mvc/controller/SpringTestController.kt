@@ -54,6 +54,11 @@ class SpringTestController(
         testController.blockingIncrement()
     }
 
+    @GetMapping("/test/synchronization-lock")
+    fun blockingSynchronizationLock() {
+        testController.lockIncrement()
+    }
+
     @GetMapping("/test/synchronization-mutex")
     fun mutexSynchronization() {
         // Not applicable
@@ -62,6 +67,11 @@ class SpringTestController(
     @GetMapping("/test/synchronization-context")
     fun contextSynchronization() {
         // Not applicable
+    }
+
+    @GetMapping("/test/external-call")
+    suspend fun externalCall() {
+        testController.externalCall()
     }
 
 
