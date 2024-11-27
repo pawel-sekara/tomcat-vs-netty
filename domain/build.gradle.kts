@@ -18,6 +18,8 @@ dependencies {
     implementation(Square.OkHttp3.okHttp)
     implementation(Ktor.client.core)
     implementation(Ktor.client.cio)
+    implementation(Ktor.client.java)
+    implementation(Ktor.client.apache)
     implementation(Ktor.client.contentNegotiation)
     implementation(libs.jackson.datatype.jsr310)
     implementation(Ktor.plugins.serialization.jackson)

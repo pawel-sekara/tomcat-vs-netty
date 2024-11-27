@@ -52,7 +52,7 @@ open class BaseController(
     }
 
     suspend fun externalCall(): Map<String, Any> {
-        return Random.nextDouble(0.0, 0.1).let {
+        return Random.nextLong(0, 100).let {
             httpBinClient.networkCall(it)
         }
     }

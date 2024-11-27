@@ -1,14 +1,15 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Ktor" type="KtorApplicationConfigurationType" factoryName="Ktor">
+    <option name="MAIN_CLASS_NAME" value="dev.sekara.block.ktor.ApplicationKt" />
     <module name="blocking-vs-nonblocking.ktor.main" />
     <option name="alternativeJrePath" />
     <option name="alternativeJrePathEnabled" value="false" />
-    <option name="includeProvidedScope" value="true" />
+    <option name="includeProvidedScope" value="false" />
     <option name="mainClass" value="dev.sekara.block.ktor.ApplicationKt" />
     <option name="passParentEnvs" value="true" />
     <option name="programParameters" value="" />
-    <option name="shortenCommandLine" value="NONE" />
-    <option name="vmParameters" value="" />
+    <option name="shortenCommandLine" />
+    <option name="vmParameters" />
     <option name="workingDirectory" value="$PROJECT_DIR$" />
     <method v="2">
       <option name="Make" enabled="true" />

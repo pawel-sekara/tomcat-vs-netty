@@ -2,6 +2,7 @@ package dev.sekara.block.ktor.plugins
 
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.logging.toLogString
 import io.ktor.server.plugins.callid.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.request.*
@@ -9,8 +10,7 @@ import org.slf4j.event.*
 
 fun Application.configureMonitoring() {
     install(CallLogging) {
-        level = Level.DEBUG
-        filter { call -> call.request.path().startsWith("/") }
+        level = Level.INFO
         callIdMdc("call-id")
     }
     install(CallId) {

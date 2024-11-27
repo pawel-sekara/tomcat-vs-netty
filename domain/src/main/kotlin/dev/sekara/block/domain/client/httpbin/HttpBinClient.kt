@@ -7,5 +7,5 @@ import retrofit2.http.Path
 interface HttpBinClient {
 
     @GET("delay/{delay}")
-    suspend fun networkCall(@Path("delay") delay: Double): Map<String, Any>
+    suspend fun networkCall(@Path("delay") delay: Long): Map<String, Any>
 }

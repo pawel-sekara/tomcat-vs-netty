@@ -4,7 +4,7 @@ plugins {
     id("com.google.cloud.tools.jib")
 }
 
-group = "dev.sekara.block.ktor"
+group = "dev.sekara.block.httpbin"
 version = "dev-1"
 
 application {
@@ -19,8 +19,6 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":db"))
-    implementation(project(":domain"))
     implementation(libs.ktor.server.core.jvm)
     implementation(libs.ktor.serialization.kotlinx.json.jvm)
     implementation(libs.ktor.server.content.negotiation.jvm)
@@ -45,15 +43,9 @@ jib {
     from {
         // Temurin has been chosen for its TCK compliance, switching from Temurin to any JDK is seamless
         image = "${project.properties["baseImageRepoUri"]?.let { "$it/" } ?: ""}amazoncorretto:17"
-        platforms {
-            platform {
-                architecture = "arm64"
-                os = "linux"
-            }
-        }
     }
     container {
-        ports = listOf("8081")
+        ports = listOf("8084")
         mainClass = "io.ktor.server.netty.EngineMain"
         jvmFlags = listOf(
             "-server",

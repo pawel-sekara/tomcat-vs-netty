@@ -2,6 +2,7 @@ package dev.sekara.block.mvc.controller
 
 import dev.sekara.block.domain.controller.BlockingTestController
 import dev.sekara.block.domain.rest.NoteDto
+import kotlinx.coroutines.runBlocking
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -71,6 +72,11 @@ class SpringTestController(
 
     @GetMapping("/test/external-call")
     suspend fun externalCall() {
+        testController.externalCall()
+    }
+
+    @GetMapping("/test/external-call-2")
+    fun externalCall2() = runBlocking {
         testController.externalCall()
     }
 
