@@ -38,18 +38,9 @@ class TestSimulation : Simulation() {
             .andThen(increment(ktorServer, scenario, rpsIncrements))
 
     val insert = Scenario("Insert") {
-        it.put("/notes").body(StringBody("{\"content\":\"Hello Gatling ${UUID.randomUUID()}\"}"))
+        it.put("/event").body(StringBody("{\"event\":\"Hello Gatling ${UUID.randomUUID()}\"}"))
     }
-    val last = Scenario("query") { it.get("/notes?limit=10") }
-    val cpuIntensive = Scenario("Cpu intensive") { it.get("/test/cpu-heavy") }
-    val cpuLight = Scenario("lite") { it.get("/test/cpu-lite") }
-    val largeString = Scenario("largeString") { it.get("/test/large-string") }
-    val largeObject = Scenario("largeObject") { it.get("/test/large-object") }
-    val blocking = Scenario("blocking") { it.get("/test/block") }
-    val synchronized = Scenario("synchronized") { it.get("/test/synchronization") }
-    val lock = Scenario("synchronized-lock") { it.get("/test/synchronization-lock") }
-    val mutex = Scenario("mutex") { it.get("/test/synchronization-mutex") }
-    val context = Scenario("context") { it.get("/test/synchronization-context") }
+
     val call = Scenario("call") { it.get("/test/external-call").requestTimeout(Duration.ofSeconds(10)) }
     val syncCall = Scenario("call-sync") { it.get("/test/external-call-2").requestTimeout(Duration.ofSeconds(10)) }
 
@@ -63,7 +54,7 @@ class TestSimulation : Simulation() {
 //                .andThen(openScenario(blocking, 2.0))
 //                .andThen(openScenario(largeObject, 50.0))
 //                .andThen(openScenario(cpuIntensive, 2.0))
-            closedScenario(call)
+            closedScenario(insert)
 //            concurrentScenario(webfluxServer, call)
 
 //            concurrentScenario(mvcServer, call)

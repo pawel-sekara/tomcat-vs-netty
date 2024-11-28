@@ -17,6 +17,10 @@ dependencies {
     implementation(project(":domain"))
 
     api(platform(Spring.boms.dependencies))
+//    implementation(Spring.boot.data.jdbc) // Uncomment this line and comment the above line to switch to JDBC
+    implementation(Spring.boot.data.r2dbc)
+    implementation(libs.postgresql)
+    implementation(libs.r2dbc.postgresql)
 
 
     implementation(Spring.boot.webflux)
@@ -24,8 +28,8 @@ dependencies {
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)
     implementation(KotlinX.coroutines.core)
+    implementation(KotlinX.coroutines.reactor)
     implementation(libs.jackson.datatype.jsr310)
-    implementation(Spring.reactor.kotlin)
 }
 
 tasks.test {

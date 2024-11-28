@@ -3,9 +3,9 @@ package dev.sekara.block.db
 import dev.sekara.block.db.schema.tables.records.EventsRecord
 import dev.sekara.block.db.schema.tables.references.EVENTS
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirst
 
 class EventRepository(

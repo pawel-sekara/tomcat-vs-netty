@@ -7,12 +7,10 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import dev.sekara.block.db.BlockingJooqContextHolder
 import dev.sekara.block.db.EventRepository
 import dev.sekara.block.db.JooqContextHolder
-import dev.sekara.block.db.NoteRepository
 import dev.sekara.block.domain.client.httpbin.blocking.BlockingHttpBinClient
 import dev.sekara.block.domain.client.httpbin.reactive.ReactiveHttpBinClient
 import dev.sekara.block.domain.controller.BlockingTestController
 import dev.sekara.block.domain.service.BlockingEventService
-import dev.sekara.block.domain.service.NoteService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -38,18 +36,9 @@ class AppConfig : WebMvcConfigurer {
     ): BlockingJooqContextHolder = BlockingJooqContextHolder(
         uri, user, password, "org.postgresql.Driver"
     )
-
     @Bean
-    fun noteRepository(contextHolder: JooqContextHolder): NoteRepository =
-        NoteRepository(contextHolder)
-
-    @Bean
-    fun noteService(noteRepository: NoteRepository): NoteService =
-        NoteService(noteRepository)
-
-    @Bean
-    fun noteController(noteService: NoteService): BlockingTestController =
-        BlockingTestController(noteService, reactiveHttpBinClient())
+    fun testController(): BlockingTestController =
+        BlockingTestController(reactiveHttpBinClient())
 
     @Bean
     fun blockingHttpBinClient() = BlockingHttpBinClient(objectMapper())
