@@ -43,6 +43,10 @@ jib {
             }
         }
     }
+    to {
+        image = "mvc"
+        tags = setOf("latest", version.toString())
+    }
     container {
         ports = listOf("8083")
         mainClass = "dev.sekara.block.mvc.MvcApplicationKt"

@@ -2,9 +2,12 @@ package dev.sekara.block.gatling
 
 import io.gatling.javaapi.core.CoreDsl.StringBody
 import io.gatling.javaapi.core.CoreDsl.constantConcurrentUsers
+import io.gatling.javaapi.core.CoreDsl.exec
 import io.gatling.javaapi.core.CoreDsl.group
 import io.gatling.javaapi.core.CoreDsl.incrementConcurrentUsers
 import io.gatling.javaapi.core.CoreDsl.incrementUsersPerSec
+import io.gatling.javaapi.core.CoreDsl.pause
+import io.gatling.javaapi.core.CoreDsl.repeat
 import io.gatling.javaapi.core.CoreDsl.scenario
 import io.gatling.javaapi.core.PopulationBuilder
 import io.gatling.javaapi.core.Simulation
@@ -13,6 +16,8 @@ import io.gatling.javaapi.http.HttpDsl.http
 import io.gatling.javaapi.http.HttpRequestActionBuilder
 import java.time.Duration
 import java.util.UUID
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
 const val ip = "127.0.0.1"
 
@@ -23,9 +28,9 @@ class TestSimulation : Simulation() {
     val mvcServer = Server("mvc", ip, 8083)
 
     fun closedScenario(scenario: Scenario) =
-        concurrentScenario(ktorServer, scenario)
+        concurrentScenario(mvcServer, scenario)
             .andThen(concurrentScenario(webfluxServer, scenario))
-            .andThen(concurrentScenario(mvcServer, scenario))
+            .andThen(concurrentScenario(ktorServer, scenario))
 
     fun openScenario(scenario: Scenario, rpsIncrements: Double = 10.0) =
         increment(mvcServer, scenario, rpsIncrements)
@@ -46,7 +51,7 @@ class TestSimulation : Simulation() {
     val mutex = Scenario("mutex") { it.get("/test/synchronization-mutex") }
     val context = Scenario("context") { it.get("/test/synchronization-context") }
     val call = Scenario("call") { it.get("/test/external-call").requestTimeout(Duration.ofSeconds(10)) }
-    val syncCall = Scenario("call") { it.get("/test/external-call-2").requestTimeout(Duration.ofSeconds(10)) }
+    val syncCall = Scenario("call-sync") { it.get("/test/external-call-2").requestTimeout(Duration.ofSeconds(10)) }
 
     init {
         setUp(
@@ -57,7 +62,8 @@ class TestSimulation : Simulation() {
 //                .andThen(openScenario(largeObject, 50.0))
 //                .andThen(openScenario(cpuIntensive, 2.0))
             closedScenario(call)
-                .andThen(concurrentScenario(mvcServer, syncCall))
+//            concurrentScenario(webfluxServer, call)
+
 //            concurrentScenario(mvcServer, call)
 //                .andThen(openScenario(lock, 1500.0))
 //                .andThen(openScenario(mutex, 150.0))
@@ -75,11 +81,15 @@ class TestSimulation : Simulation() {
         ).injectClosed(
 //            constantConcurrentUsers(10)
 //                .during(Duration.ofSeconds(10))
-            incrementConcurrentUsers(35)
-                .times(10)
-                .eachLevelLasting(Duration.ofMillis(2000))
+
+            incrementConcurrentUsers(300)
+
+                .times(5)
+                .eachLevelLasting(Duration.ofMillis(3000))
+                .separatedByRampsLasting(3)
                 .startingFrom(10)
-        ).protocols(server.protocol)
+        )
+            .protocols(server.protocol)
 
     private fun increment(server: Server, scenario: Scenario, rpsIncrements: Double = 50.0) =
         scenario("Open ${server.name} ${scenario.name}").exec(

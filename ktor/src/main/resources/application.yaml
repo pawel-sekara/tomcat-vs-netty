@@ -4,6 +4,10 @@ ktor:
             - dev.sekara.block.ktor.ApplicationKt.module
     deployment:
         port: 8081
+        callGroupSize: 2
+        connectionGroupSize: 2
+        workerGroupSize: 2
+
 
 db:
   uri: "r2dbc:pool:postgresql://postgres_local:5432/ktor?initialSize=20&maxSize=100"

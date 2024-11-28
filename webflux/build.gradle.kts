@@ -45,6 +45,10 @@ jib {
             }
         }
     }
+    to {
+        image = "webflux"
+        tags = setOf("latest", version.toString())
+    }
     container {
         ports = listOf("8082")
         mainClass = "dev.sekara.block.webflux.WebfluxApplicationKt"

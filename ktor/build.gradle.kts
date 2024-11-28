@@ -52,6 +52,10 @@ jib {
             }
         }
     }
+    to {
+        image = "ktor"
+        tags = setOf("latest", version.toString())
+    }
     container {
         ports = listOf("8081")
         mainClass = "io.ktor.server.netty.EngineMain"

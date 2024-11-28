@@ -43,6 +43,16 @@ jib {
     from {
         // Temurin has been chosen for its TCK compliance, switching from Temurin to any JDK is seamless
         image = "${project.properties["baseImageRepoUri"]?.let { "$it/" } ?: ""}amazoncorretto:17"
+        platforms {
+            platform {
+                architecture = "arm64"
+                os = "linux"
+            }
+        }
+    }
+    to {
+        image = "httpbin"
+        tags = setOf("latest", version.toString())
     }
     container {
         ports = listOf("8084")

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: arm64v8/postgres:latest
@@ -13,6 +11,59 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - docker
+
+  ktor:
+    image: ktor:latest
+    container_name: ktor
+    ports:
+      - "8081:8081"
+    networks:
+      - docker
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: "8192M"
+
+  webflux:
+    image: webflux:latest
+    container_name: webflux
+    ports:
+      - "8082:8082"
+    networks:
+      - docker
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: "8192M"
+
+  mvc:
+    image: mvc:latest
+    container_name: mvc
+    ports:
+      - "8083:8083"
+    networks:
+      - docker
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: "8192M"
+
+  httpbin:
+    image: httpbin:latest
+    container_name: httpbin
+    ports:
+      - "8084:8084"
+    networks:
+      - docker
+
+networks:
+  docker:
+    driver: bridge
 
 volumes:
   postgres_data:
