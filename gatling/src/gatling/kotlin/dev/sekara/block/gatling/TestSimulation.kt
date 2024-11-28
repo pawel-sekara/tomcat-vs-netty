@@ -53,6 +53,8 @@ class TestSimulation : Simulation() {
     val call = Scenario("call") { it.get("/test/external-call").requestTimeout(Duration.ofSeconds(10)) }
     val syncCall = Scenario("call-sync") { it.get("/test/external-call-2").requestTimeout(Duration.ofSeconds(10)) }
 
+
+
     init {
         setUp(
 //                openScenario(insert)
@@ -82,7 +84,7 @@ class TestSimulation : Simulation() {
 //            constantConcurrentUsers(10)
 //                .during(Duration.ofSeconds(10))
 
-            incrementConcurrentUsers(300)
+            incrementConcurrentUsers(750)
 
                 .times(5)
                 .eachLevelLasting(Duration.ofMillis(3000))

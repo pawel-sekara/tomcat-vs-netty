@@ -1,7 +1,9 @@
 package dev.sekara.block.webflux.config
 
 import dev.sekara.block.domain.controller.ReactiveTestController
+import dev.sekara.block.domain.rest.EventDto
 import dev.sekara.block.domain.rest.NoteDto
+import dev.sekara.block.webflux.controller.WebfluxEventController
 import kotlinx.coroutines.flow.toList
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,7 +18,22 @@ import org.springframework.web.reactive.function.server.queryParamOrNull
 class RoutingConfig {
 
     @Bean
-    suspend fun route(controller: ReactiveTestController) = coRouter {
+    suspend fun eventRoutes(handler: WebfluxEventController) = coRouter {
+        "/event-router".nest {
+            GET("") { request ->
+                val flow = handler.getAllEvents(request.queryParamOrNull("limit")?.toInt())
+                ServerResponse.ok().bodyValueAndAwait(flow)
+            }
+
+            POST("") {
+                val event = it.awaitBody<EventDto>()
+                ServerResponse.ok().bodyValueAndAwait(handler.createEvent(event))
+            }
+        }
+    }
+
+    @Bean
+    suspend fun testRoutes(controller: ReactiveTestController) = coRouter {
         "/notes".nest {
             GET("") {
                 val flow =

@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import dev.sekara.block.db.BlockingJooqContextHolder
+import dev.sekara.block.db.EventRepository
 import dev.sekara.block.db.JooqContextHolder
 import dev.sekara.block.db.NoteRepository
 import dev.sekara.block.domain.client.httpbin.blocking.BlockingHttpBinClient
 import dev.sekara.block.domain.client.httpbin.reactive.ReactiveHttpBinClient
 import dev.sekara.block.domain.controller.BlockingTestController
+import dev.sekara.block.domain.service.BlockingEventService
 import dev.sekara.block.domain.service.NoteService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -54,6 +56,12 @@ class AppConfig : WebMvcConfigurer {
 
     @Bean
     fun reactiveHttpBinClient() = ReactiveHttpBinClient(objectMapper())
+
+    @Bean
+    fun eventRepository(contextHolder: JooqContextHolder) = EventRepository(contextHolder)
+
+    @Bean
+    fun eventsService(eventRepository: EventRepository) = BlockingEventService(eventRepository, objectMapper())
 
     @Bean
     fun objectMapper() = jacksonObjectMapper()

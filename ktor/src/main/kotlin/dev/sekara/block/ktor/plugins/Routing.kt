@@ -9,7 +9,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.flow.toList
 
-fun Application.configureRouting(dependencies: Dependencies) {
+fun Application.addTestRoutes(dependencies: Dependencies) {
     routing {
         val controller = dependencies.testController
 
