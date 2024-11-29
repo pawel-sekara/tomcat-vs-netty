@@ -1,0 +1,18 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'mvc'
+    static_configs:
+      - targets: ['mvc:8083']
+    metrics_path: '/actuator/prometheus'
+
+  - job_name: 'webflux'
+    static_configs:
+      - targets: ['webflux:8082']
+    metrics_path: '/actuator/prometheus'
+
+  - job_name: 'ktor'
+    static_configs:
+      - targets: ['ktor:8081']
+    metrics_path: '/metrics'

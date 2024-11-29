@@ -14,19 +14,13 @@ import dev.sekara.block.domain.service.BlockingEventService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.converter.HttpMessageConverter
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+import org.springframework.context.annotation.Primary
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
 @Configuration
 @EnableWebMvc
-class AppConfig : WebMvcConfigurer {
-
-    override fun configureMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
-        converters.add(MappingJackson2HttpMessageConverter(objectMapper()))
-    }
+class AppConfig {
 
     @Bean
     fun jooqContextHolder(
@@ -53,6 +47,7 @@ class AppConfig : WebMvcConfigurer {
     fun eventsService(eventRepository: EventRepository) = BlockingEventService(eventRepository, objectMapper())
 
     @Bean
+    @Primary
     fun objectMapper() = jacksonObjectMapper()
         .registerModule(JavaTimeModule())
         .apply {

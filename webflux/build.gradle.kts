@@ -21,9 +21,10 @@ dependencies {
     implementation(Spring.boot.data.r2dbc)
     implementation(libs.postgresql)
     implementation(libs.r2dbc.postgresql)
-
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     implementation(Spring.boot.webflux)
+    implementation(Spring.boot.actuator)
     implementation(Spring.reactor.kotlin)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)

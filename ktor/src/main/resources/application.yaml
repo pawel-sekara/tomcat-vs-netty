@@ -6,6 +6,6 @@ ktor:
         port: 8081
 
 db:
-  uri: "r2dbc:pool:postgresql://postgres_local:5432/ktor?initialSize=20&maxSize=100"
+  uri: "r2dbc:pool:postgresql://db:5432/ktor?initialSize=20&maxSize=100"
   user: "root"
   password: "root"

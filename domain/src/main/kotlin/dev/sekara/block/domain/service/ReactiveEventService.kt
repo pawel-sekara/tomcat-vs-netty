@@ -17,5 +17,10 @@ class ReactiveEventService(
 
     fun fetchLastEvents(limit: Int) = repository.fetchLastFlow(limit).map { it.toDomain(objectMapper) }
 
-    suspend fun saveEvent(event: NewEvent) = repository.cInsert(event.toRecord(objectMapper)).toDomain(objectMapper)
+    suspend fun saveEvent(event: NewEvent): Event {
+        if (event.event == "error") {
+            throw RuntimeException("Ouch, cannot save the event")
+        }
+        return repository.cInsert(event.toRecord(objectMapper)).toDomain(objectMapper)
+    }
 }

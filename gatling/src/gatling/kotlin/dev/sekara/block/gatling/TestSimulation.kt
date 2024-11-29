@@ -16,6 +16,7 @@ import io.gatling.javaapi.http.HttpDsl.http
 import io.gatling.javaapi.http.HttpRequestActionBuilder
 import java.time.Duration
 import java.util.UUID
+import kotlin.random.Random.Default.nextInt
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
@@ -38,12 +39,11 @@ class TestSimulation : Simulation() {
             .andThen(increment(ktorServer, scenario, rpsIncrements))
 
     val insert = Scenario("Insert") {
-        it.put("/event").body(StringBody("{\"event\":\"Hello Gatling ${UUID.randomUUID()}\"}"))
+        it.post("/event").body(StringBody("{\"event\":\"Hello Gatling ${UUID.randomUUID()}\"}"))
     }
-
+    val get = Scenario("Get lots of data") { it.get("/event?limit=${nextInt(10, 100)}") }
     val call = Scenario("call") { it.get("/test/external-call").requestTimeout(Duration.ofSeconds(10)) }
     val syncCall = Scenario("call-sync") { it.get("/test/external-call-2").requestTimeout(Duration.ofSeconds(10)) }
-
 
 
     init {
@@ -54,7 +54,7 @@ class TestSimulation : Simulation() {
 //                .andThen(openScenario(blocking, 2.0))
 //                .andThen(openScenario(largeObject, 50.0))
 //                .andThen(openScenario(cpuIntensive, 2.0))
-            closedScenario(insert)
+            closedScenario(call)
 //            concurrentScenario(webfluxServer, call)
 
 //            concurrentScenario(mvcServer, call)
@@ -66,23 +66,16 @@ class TestSimulation : Simulation() {
         )
     }
 
-    private fun concurrentScenario(server: Server, scenario: Scenario): PopulationBuilder =
-        scenario("Closed ${server.name} ${scenario.name}").exec(
-            group(server.name).on(
-                scenario.action("Closed ${server.name}")
-            ).exitHereIfFailed()
+    private fun concurrentScenario(server: Server, scenario: Scenario, users: Int = 100, steps: Int = 30): PopulationBuilder =
+        scenario("Closed ${server.name} ${scenario.name}").forever().on(
+            exec(group(server.name).on(scenario.action("Closed ${server.name}")))
         ).injectClosed(
-//            constantConcurrentUsers(10)
-//                .during(Duration.ofSeconds(10))
-
-            incrementConcurrentUsers(750)
-
-                .times(5)
-                .eachLevelLasting(Duration.ofMillis(3000))
-                .separatedByRampsLasting(3)
-                .startingFrom(10)
-        )
-            .protocols(server.protocol)
+            incrementConcurrentUsers(users)
+                .times(steps)
+                .eachLevelLasting(20.seconds.toJavaDuration())
+                .separatedByRampsLasting(10.seconds.toJavaDuration())
+                .startingFrom(0)
+        ).protocols(server.protocol)
 
     private fun increment(server: Server, scenario: Scenario, rpsIncrements: Double = 50.0) =
         scenario("Open ${server.name} ${scenario.name}").exec(
@@ -113,6 +106,6 @@ class TestSimulation : Simulation() {
         val protocol = http.baseUrl("http://$ip:$port")
             .contentTypeHeader("application/json")
             .shareConnections()
-            .warmUp("http://$ip:$port/notes?limit=1")
+            .warmUp("http://$ip:$port/event?limit=1")
     }
 }

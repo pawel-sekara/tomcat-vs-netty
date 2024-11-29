@@ -1,5 +1,6 @@
 package dev.sekara.block.db
 
+import io.r2dbc.pool.PoolingConnectionFactoryProvider
 import io.r2dbc.spi.ConnectionFactories
 import io.r2dbc.spi.ConnectionFactory
 import io.r2dbc.spi.ConnectionFactoryOptions
@@ -19,6 +20,8 @@ class ReactiveJooqContextHolder(
         ).mutate()
             .option(ConnectionFactoryOptions.USER, user)
             .option(ConnectionFactoryOptions.PASSWORD, password)
+            .option(PoolingConnectionFactoryProvider.INITIAL_SIZE, 20)
+            .option(PoolingConnectionFactoryProvider.MAX_SIZE, 100)
             .build()
     )
 

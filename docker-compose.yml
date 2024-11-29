@@ -7,6 +7,7 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
       POSTGRES_DATABASE: ktor
+    shm_size: 1G
     ports:
       - "5432:5432"
     volumes:
@@ -61,9 +62,33 @@ services:
     networks:
       - docker
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - docker
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - "GF_SECURITY_ADMIN_PASSWORD=admin"
+    networks:
+      - docker
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+
 networks:
   docker:
     driver: bridge
 
 volumes:
   postgres_data:
+  grafana_data:

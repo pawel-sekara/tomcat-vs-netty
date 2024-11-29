@@ -18,7 +18,10 @@ dependencies {
 
     api(platform(Spring.boms.dependencies))
 
+    implementation("io.micrometer:micrometer-registry-prometheus")
+
     implementation(Spring.boot.web)
+    implementation(Spring.boot.actuator)
     implementation(KotlinX.coroutines.core)
     implementation(libs.jackson.module.kotlin)
     implementation(libs.kotlin.reflect)

@@ -32,6 +32,9 @@ dependencies {
     implementation(libs.logback.classic)
     implementation(Arrow.core)
     implementation(libs.jackson.datatype.jsr310)
+
+    implementation("io.ktor:ktor-server-metrics-micrometer:_")
+    implementation("io.micrometer:micrometer-registry-prometheus:_")
 }
 
 tasks.test {
