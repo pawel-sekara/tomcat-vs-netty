@@ -42,8 +42,13 @@ class TestSimulation : Simulation() {
         it.post("/event").body(StringBody("{\"event\":\"Hello Gatling ${UUID.randomUUID()}\"}"))
     }
     val get = Scenario("Get lots of data") { it.get("/event?limit=${nextInt(10, 100)}") }
-    val call = Scenario("call") { it.get("/test/external-call").requestTimeout(Duration.ofSeconds(10)) }
-    val syncCall = Scenario("call-sync") { it.get("/test/external-call-2").requestTimeout(Duration.ofSeconds(10)) }
+
+
+    val hello = Scenario("hello") { it.get("/test/hello").requestTimeout(Duration.ofSeconds(20)) }
+    val work = Scenario("work") { it.get("/test/work").requestTimeout(Duration.ofSeconds(20)) }
+    val call = Scenario("call") { it.get("/test/external-call").requestTimeout(Duration.ofSeconds(20)) }
+    val callCustom = Scenario("callCustom") { it.get("/test/external-call-custom").requestTimeout(Duration.ofSeconds(20)) }
+    val callReactive = Scenario("callReactive") { it.get("/test/external-call-reactive").requestTimeout(Duration.ofSeconds(20)) }
 
 
     init {
@@ -54,7 +59,11 @@ class TestSimulation : Simulation() {
 //                .andThen(openScenario(blocking, 2.0))
 //                .andThen(openScenario(largeObject, 50.0))
 //                .andThen(openScenario(cpuIntensive, 2.0))
-            closedScenario(call)
+            closedScenario(hello)
+                .andThen(closedScenario(work))
+                .andThen(closedScenario(call))
+                .andThen(concurrentScenario(mvcServer, callCustom))
+                .andThen(concurrentScenario(mvcServer, callReactive))
 //            concurrentScenario(webfluxServer, call)
 
 //            concurrentScenario(mvcServer, call)
@@ -66,14 +75,14 @@ class TestSimulation : Simulation() {
         )
     }
 
-    private fun concurrentScenario(server: Server, scenario: Scenario, users: Int = 100, steps: Int = 30): PopulationBuilder =
+    private fun concurrentScenario(server: Server, scenario: Scenario, users: Int = 100, steps: Int = 1): PopulationBuilder =
         scenario("Closed ${server.name} ${scenario.name}").forever().on(
             exec(group(server.name).on(scenario.action("Closed ${server.name}")))
         ).injectClosed(
             incrementConcurrentUsers(users)
                 .times(steps)
-                .eachLevelLasting(20.seconds.toJavaDuration())
-                .separatedByRampsLasting(10.seconds.toJavaDuration())
+                .eachLevelLasting(2.seconds.toJavaDuration())
+                .separatedByRampsLasting(1.seconds.toJavaDuration())
                 .startingFrom(0)
         ).protocols(server.protocol)
 

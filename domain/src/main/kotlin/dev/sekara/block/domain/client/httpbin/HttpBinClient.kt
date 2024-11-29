@@ -9,3 +9,4 @@ interface HttpBinClient {
     @GET("delay/{delay}")
     suspend fun networkCall(@Path("delay") delay: Long): Map<String, Any>
 }
+

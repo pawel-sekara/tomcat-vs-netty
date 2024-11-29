@@ -11,6 +11,7 @@ import dev.sekara.block.domain.client.httpbin.blocking.BlockingHttpBinClient
 import dev.sekara.block.domain.client.httpbin.reactive.ReactiveHttpBinClient
 import dev.sekara.block.domain.controller.BlockingTestController
 import dev.sekara.block.domain.service.BlockingEventService
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -30,12 +31,21 @@ class AppConfig {
     ): BlockingJooqContextHolder = BlockingJooqContextHolder(
         uri, user, password, "org.postgresql.Driver"
     )
-    @Bean
-    fun testController(): BlockingTestController =
-        BlockingTestController(reactiveHttpBinClient())
 
     @Bean
-    fun blockingHttpBinClient() = BlockingHttpBinClient(objectMapper())
+    @Qualifier("blocking")
+    fun testControllerWithBlockingClient(): BlockingTestController =
+        BlockingTestController(blockingHttpBinClient())
+
+    @Bean
+    @Qualifier("custom")
+    fun testControllerWithBlockingClientCustomDispatcher(): BlockingTestController =
+        BlockingTestController(blockingHttpBinClientWithCustomDispatcher())
+
+    @Bean
+    @Qualifier("reactive")
+    fun testControllerWithReactiveClient(): BlockingTestController =
+        BlockingTestController(reactiveHttpBinClient())
 
     @Bean
     fun reactiveHttpBinClient() = ReactiveHttpBinClient(objectMapper())
@@ -54,4 +64,8 @@ class AppConfig {
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         }
+
+    private fun blockingHttpBinClient() = BlockingHttpBinClient(objectMapper())
+
+    private fun blockingHttpBinClientWithCustomDispatcher() = BlockingHttpBinClient(objectMapper(), true)
 }

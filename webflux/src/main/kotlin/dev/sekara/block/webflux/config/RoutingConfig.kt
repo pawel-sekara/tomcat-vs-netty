@@ -3,6 +3,7 @@ package dev.sekara.block.webflux.config
 import dev.sekara.block.domain.controller.ReactiveTestController
 import dev.sekara.block.domain.rest.EventDto
 import dev.sekara.block.webflux.controller.WebfluxEventController
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -35,6 +36,15 @@ class RoutingConfig {
     suspend fun testRoutes(controller: ReactiveTestController) = coRouter {
         GET("/test/external-call") {
             controller.externalCall()
+            ServerResponse.ok().buildAndAwait()
+        }
+
+        GET("/test/hello") {
+            ServerResponse.ok().bodyValueAndAwait("Hello, World!")
+        }
+
+        GET("/test/work") {
+            delay(100)
             ServerResponse.ok().buildAndAwait()
         }
 

@@ -21,14 +21,9 @@ class ReactiveHttpBinClient(objectMapper: ObjectMapper) : HttpBinClient {
     private val ktor = ktor(objectMapper)
 
     override suspend fun networkCall(delay: Long): Map<String, Any> {
-        return try {
-            ktor.get("http://httpbin:8084/delay/$delay") {
-                contentType(ContentType.Application.Json)
-            }.body()
-        } catch (e: Exception) {
-            KtorSimpleLogger("Error").error("Error calling httpbin", e)
-            emptyMap()
-        }
+        return ktor.get("http://httpbin:8084/delay/$delay") {
+            contentType(ContentType.Application.Json)
+        }.body()
     }
 
     companion object {
