@@ -61,14 +61,14 @@ class TestSimulation : Simulation() {
         )
     }
 
-    private fun concurrentScenario(server: Server, scenario: Scenario, users: Int = 100, steps: Int = 1): PopulationBuilder =
+    private fun concurrentScenario(server: Server, scenario: Scenario, users: Int = 100, steps: Int = 30): PopulationBuilder =
         scenario("Closed ${server.name} ${scenario.name}").exec(
             group(server.name).on(scenario.action(server.name))
         ).injectClosed(
             incrementConcurrentUsers(users)
                 .times(steps)
-                .eachLevelLasting(2.seconds.toJavaDuration())
-                .separatedByRampsLasting(1.seconds.toJavaDuration())
+                .eachLevelLasting(20.seconds.toJavaDuration())
+                .separatedByRampsLasting(10.seconds.toJavaDuration())
                 .startingFrom(0)
         ).protocols(server.protocol)
 
