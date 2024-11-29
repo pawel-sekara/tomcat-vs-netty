@@ -20,9 +20,9 @@ class SpringTestController(
         return "Hello, World!"
     }
 
-    @GetMapping("/test/hello")
-    suspend fun work(): ResponseEntity<Unit> {
-        delay(100)
+    @GetMapping("/test/work")
+    fun work(): ResponseEntity<Unit> {
+        Thread.sleep(100)
         return ResponseEntity.ok().build()
     }
 

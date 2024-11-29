@@ -53,31 +53,17 @@ class TestSimulation : Simulation() {
 
     init {
         setUp(
-//                openScenario(insert)
-//                .andThen(openScenario(cpuLight))
-//                .andThen(openScenario(largeString, 25.0))
-//                .andThen(openScenario(blocking, 2.0))
-//                .andThen(openScenario(largeObject, 50.0))
-//                .andThen(openScenario(cpuIntensive, 2.0))
             closedScenario(hello)
                 .andThen(closedScenario(work))
                 .andThen(closedScenario(call))
                 .andThen(concurrentScenario(mvcServer, callCustom))
                 .andThen(concurrentScenario(mvcServer, callReactive))
-//            concurrentScenario(webfluxServer, call)
-
-//            concurrentScenario(mvcServer, call)
-//                .andThen(openScenario(lock, 1500.0))
-//                .andThen(openScenario(mutex, 150.0))
-//                .andThen(openScenario(context, 1500.0))
-//                .andThen(openScenario(last))
-
         )
     }
 
     private fun concurrentScenario(server: Server, scenario: Scenario, users: Int = 100, steps: Int = 1): PopulationBuilder =
-        scenario("Closed ${server.name} ${scenario.name}").forever().on(
-            exec(group(server.name).on(scenario.action("Closed ${server.name}")))
+        scenario("Closed ${server.name} ${scenario.name}").exec(
+            group(server.name).on(scenario.action(server.name))
         ).injectClosed(
             incrementConcurrentUsers(users)
                 .times(steps)
