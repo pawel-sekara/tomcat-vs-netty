@@ -33,20 +33,22 @@ class RoutingConfig {
     }
 
     @Bean
-    suspend fun testRoutes(controller: ReactiveTestController) = coRouter {
-        GET("/test/external-call") {
-            controller.externalCall()
-            ServerResponse.ok().buildAndAwait()
-        }
+    suspend fun testRoutes(controller: ReactiveTestController) =
+        coRouter {
+            GET("/test/hello") {
+                ServerResponse.ok()
+                    .bodyValueAndAwait("Hello, World!")
+            }
 
-        GET("/test/hello") {
-            ServerResponse.ok().bodyValueAndAwait("Hello, World!")
-        }
+            GET("/test/external-call") {
+                controller.externalCall()
+                ServerResponse.ok().buildAndAwait()
+            }
 
-        GET("/test/work") {
-            delay(100)
-            ServerResponse.ok().buildAndAwait()
-        }
+            GET("/test/work") {
+                delay(100)
+                ServerResponse.ok().buildAndAwait()
+            }
 
-    }
+        }
 }

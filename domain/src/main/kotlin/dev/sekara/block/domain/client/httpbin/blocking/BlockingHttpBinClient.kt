@@ -38,3 +38,4 @@ class BlockingHttpBinClient(objectMapper: ObjectMapper, customizeDispatcher: Boo
         }
     }
 }
+

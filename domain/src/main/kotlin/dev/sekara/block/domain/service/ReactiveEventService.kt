@@ -6,6 +6,7 @@ import dev.sekara.block.domain.entity.Event
 import dev.sekara.block.domain.entity.NewEvent
 import dev.sekara.block.domain.mapper.toDomain
 import dev.sekara.block.domain.mapper.toRecord
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class ReactiveEventService(
@@ -15,12 +16,16 @@ class ReactiveEventService(
 
     fun fetchEvents() = repository.fetchAllFlow().map { it.toDomain(objectMapper) }
 
-    fun fetchLastEvents(limit: Int) = repository.fetchLastFlow(limit).map { it.toDomain(objectMapper) }
+    fun fetchLastEvents(limit: Int): Flow<Event> {
+        return repository.fetchLastFlow(limit).map {
+            if (limit == 54) {
+                Integer.parseInt("haha, this will fail")
+            }
+            it.toDomain(objectMapper)
+        }
+    }
 
     suspend fun saveEvent(event: NewEvent): Event {
-        if (event.event == "error") {
-            throw RuntimeException("Ouch, cannot save the event")
-        }
         return repository.cInsert(event.toRecord(objectMapper)).toDomain(objectMapper)
     }
 }

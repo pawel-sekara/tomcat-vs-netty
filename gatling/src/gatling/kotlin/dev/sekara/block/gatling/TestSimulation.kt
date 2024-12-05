@@ -43,12 +43,13 @@ class TestSimulation : Simulation() {
     }
     val get = Scenario("Get lots of data") { it.get("/event?limit=${nextInt(10, 100)}") }
 
-
     val hello = Scenario("hello") { it.get("/test/hello").requestTimeout(Duration.ofSeconds(20)) }
     val work = Scenario("work") { it.get("/test/work").requestTimeout(Duration.ofSeconds(20)) }
     val call = Scenario("call") { it.get("/test/external-call").requestTimeout(Duration.ofSeconds(20)) }
-    val callCustom = Scenario("callCustom") { it.get("/test/external-call-custom").requestTimeout(Duration.ofSeconds(20)) }
-    val callReactive = Scenario("callReactive") { it.get("/test/external-call-reactive").requestTimeout(Duration.ofSeconds(20)) }
+    val callCustom =
+        Scenario("callCustom") { it.get("/test/external-call-custom").requestTimeout(Duration.ofSeconds(20)) }
+    val callReactive =
+        Scenario("callReactive") { it.get("/test/external-call-reactive").requestTimeout(Duration.ofSeconds(20)) }
 
 
     init {
@@ -61,8 +62,13 @@ class TestSimulation : Simulation() {
         )
     }
 
-    private fun concurrentScenario(server: Server, scenario: Scenario, users: Int = 100, steps: Int = 30): PopulationBuilder =
-        scenario("Closed ${server.name} ${scenario.name}").exec(
+    private fun concurrentScenario(
+        server: Server,
+        scenario: Scenario,
+        users: Int = 100,
+        steps: Int = 30
+    ): PopulationBuilder =
+        scenario("${server.name} ${scenario.name}").exec(
             group(server.name).on(scenario.action(server.name))
         ).injectClosed(
             incrementConcurrentUsers(users)

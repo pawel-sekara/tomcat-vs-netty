@@ -9,9 +9,10 @@ import java.time.Instant
 import java.util.UUID
 
 @Repository
-interface JpaEventRepository: R2dbcRepository<JpaEvent, UUID> {
+interface JpaEventRepository: R2dbcRepository<SpringDataEvent, UUID> {
 
     @Modifying
     @Query("INSERT INTO events (id, event, data, created_at) VALUES (:id, :event, :data, :createdAt)")
-    fun insert(id: UUID, event: String, data: String?, createdAt: Instant): Mono<JpaEvent>
+    fun insert(id: UUID, event: String, data: String?, createdAt: Instant): Mono<SpringDataEvent>
 }
+

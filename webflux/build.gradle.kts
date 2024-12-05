@@ -19,10 +19,13 @@ dependencies {
     api(platform(Spring.boms.dependencies))
 //    implementation(Spring.boot.data.jdbc) // Uncomment this line and comment the above line to switch to JDBC
     implementation(Spring.boot.data.r2dbc)
+    implementation("org.hibernate.reactive:hibernate-reactive-core:_")
     implementation(libs.postgresql)
     implementation(libs.r2dbc.postgresql)
     implementation("io.micrometer:micrometer-registry-prometheus")
 
+    implementation(Arrow.core)
+    implementation(Arrow.fx.coroutines)
     implementation(Spring.boot.webflux)
     implementation(Spring.boot.actuator)
     implementation(Spring.reactor.kotlin)
@@ -30,6 +33,7 @@ dependencies {
     implementation(libs.kotlin.reflect)
     implementation(KotlinX.coroutines.core)
     implementation(KotlinX.coroutines.reactor)
+    implementation(KotlinX.coroutines.slf4j)
     implementation(libs.jackson.datatype.jsr310)
 }
 

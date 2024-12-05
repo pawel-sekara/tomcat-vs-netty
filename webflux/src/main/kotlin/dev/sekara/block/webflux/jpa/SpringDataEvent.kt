@@ -6,13 +6,11 @@ import java.time.Instant
 import java.util.UUID
 
 @Table("events")
-class JpaEvent(
+data class SpringDataEvent(
     @Id
-    var id: UUID?,
-
+    var id: UUID? = null,
     var event: String,
-
-    var data: String?,
-
-    var createdAt: Instant?,
+    var data: String? = null,
+    var createdAt: Instant? = null,
 )
+

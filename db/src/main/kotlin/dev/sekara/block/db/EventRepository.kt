@@ -24,17 +24,6 @@ class EventRepository(
         .limit(limit)
         .fetch { it.into(EVENTS) }
 
-    fun insert(event: EventsRecord) = dsl.insertInto(EVENTS)
-        .set(event)
-        .returning()
-        .fetchOne()
-
-    fun fetchAllFlow() = dsl.select()
-        .from(EVENTS)
-        .asFlow()
-        .flowOn(Dispatchers.IO)
-        .map { it.into(EVENTS) }
-
     fun fetchLastFlow(limit: Int) = dsl.select()
         .from(EVENTS)
         .orderBy(EVENTS.CREATED_AT.desc())
@@ -43,8 +32,22 @@ class EventRepository(
         .flowOn(Dispatchers.IO)
         .map { it.into(EVENTS) }
 
+
+    fun insert(event: EventsRecord) = dsl.insertInto(EVENTS)
+        .set(event)
+        .returning()
+        .fetchSingle()
+
     suspend fun cInsert(event: EventsRecord) = dsl.insertInto(EVENTS)
         .set(event)
         .returning()
         .awaitFirst()
+
+    fun fetchAllFlow() = dsl.select()
+        .from(EVENTS)
+        .asFlow()
+        .flowOn(Dispatchers.IO)
+        .map { it.into(EVENTS) }
+
+
 }
